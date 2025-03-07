@@ -40,11 +40,11 @@
 // | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
 //                     | ALT  | GUI  |  LO  |  SPACE |  | ENTER |  HI  | BSPC  | GUI   |
             bindings = <
-&kp ESC  &kp N1     &kp N2     &kp N3      &kp N4      &kp N5                    &kp N6 &kp N7      &kp N8      &kp N9     &kp N0        &kp GRAVE
-&kp TAB  &kp Q      &kp W      &kp E       &kp R       &kp T                     &kp Y  &kp U       &kp I       &kp O      &kp P         &kp MINUS
-&kp CAPS &ht LALT A &ht LGUI S &ht LCTRL D &ht LSHFT F &kp G                     &kp H  &ht RSHFT J &ht RCTRL K &ht RGUI L &ht LALT SEMI &kp SQT
-&kp LPAR &kp Z      &kp X      &kp C       &kp V       &kp B  &kp LBKT  &kp RBKT &kp N  &kp M       &kp COMMA   &kp DOT    &kp FSLH      &kp RPAR
-                               &kp LALT    &kp LGUI    &mo LO &kp SPACE &kp RET  &mo HI &kp BSPC    &to GAME
+&kp ESC    &kp N1       &kp N2       &kp N3        &kp N4        &kp N5                          &kp N6   &kp N7        &kp N8        &kp N9       &kp N0          &kp GRAVE
+&kp TAB    &kp Q        &kp W        &kp E         &kp R         &kp T                           &kp Y    &kp U         &kp I         &kp O        &kp P           &kp MINUS
+&kp CAPS   &ht LALT A   &ht LGUI S   &ht LCTRL D   &ht LSHFT F   &kp G                           &kp H    &ht RSHFT J   &ht RCTRL K   &ht RGUI L   &ht LALT SEMI   &kp SQT
+&kp LPAR   &kp Z        &kp X        &kp C         &kp V         &kp B    &kp LBKT    &kp RBKT   &kp N    &kp M         &kp COMMA     &kp DOT      &kp FSLH        &kp RPAR
+                                     &kp LALT      &kp LGUI      &mo LO   &kp SPACE   &kp RET    &mo HI   &kp BSPC      &to GAME
             >;
         };
 
