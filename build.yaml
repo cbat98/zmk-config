@@ -1,29 +1,17 @@
-# This file generates the GitHub Actions matrix
-# For simple board + shield combinations, add them
-# to the top level board and shield arrays, for more
-# control, add individual board + shield combinations to
-# the `include` property, e.g:
+# Build matrix for config/ -- chrl-kbd v1.
 #
-# board: [ "nice_nano_v2" ]
-# shield: [ "corne_left", "corne_right" ]
-# include:
-#   - board: bdn9_rev2
-#   - board: nice_nano_v2
-#     shield: reviung41
+# The other two variants have their own matrix + config directory, because ZMK
+# derives the keymap filename from the SHIELD name: shield lily58_left always
+# reads <config>/lily58.keymap. Two Lily58 keymaps therefore cannot live in one
+# config directory. See .github/workflows/build.yml.
 #
+#   build.yaml            + config/            -> chrl-kbd v1
+#   build-lily58.yaml     + config-lily58/     -> Lily58, original 58-key layout
+#   build-lily58-42.yaml  + config-lily58-42/  -> Lily58, 42-key training layout
 ---
 include:
-  # Lily58, running the 42-key training keymap.
-  - board: nice_nano_v2
-    shield: lily58_left nice_view_adapter nice_view
-  - board: nice_nano_v2
-    shield: lily58_right
-
-  # chrl-kbd v1. Pinout is in; not yet compiled or flashed.
-  #
-  # Displays are footprinted but unpopulated, and the nice!view is NOT routed
-  # to the pro-micro SPI pins, so "nice_view_adapter nice_view" will not work
-  # here as it does for the Lily58 above. See config/chrl_kbd_v1.conf.
+  # Displays are footprinted but routed to pro-micro 0/1/2, which is not where
+  # nice_view_adapter looks. Do not add it here; see config/chrl_kbd_v1.conf.
   - board: nice_nano_v2
     shield: chrl_kbd_v1_left
   - board: nice_nano_v2

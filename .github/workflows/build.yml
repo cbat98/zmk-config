@@ -1,5 +1,35 @@
 on: [push, workflow_dispatch]
 
+# Three independent firmware variants, built in parallel, each downloadable as
+# its own archive from the run's Artifacts section.
+#
+# They are separate workflow calls rather than one build matrix because ZMK
+# resolves the keymap from the shield name -- shield lily58_left always reads
+# <config>/lily58.keymap -- so the two Lily58 layouts need separate config
+# directories, and config_path is a per-call input, not a per-matrix-entry one.
+#
+# archive_name must be unique across jobs: actions/upload-artifact fails on
+# duplicate artifact names rather than merging them.
+
 jobs:
-  build:
+  chrl-kbd-v1:
+    name: chrl-kbd v1
     uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      archive_name: chrl-kbd-v1
+
+  lily58-original:
+    name: Lily58 (original 58-key)
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      config_path: config-lily58
+      build_matrix_path: build-lily58.yaml
+      archive_name: lily58-original
+
+  lily58-42key:
+    name: Lily58 (42-key training)
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      config_path: config-lily58-42
+      build_matrix_path: build-lily58-42.yaml
+      archive_name: lily58-42key

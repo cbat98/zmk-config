@@ -1,0 +1,10 @@
+# Build matrix for config-lily58/ -- the original 58-key Lily58 layout.
+#
+# This is the known-good layout that predates the 42-key work. Kept building so
+# there is always a firmware that restores the old board to how it was.
+---
+include:
+  - board: nice_nano_v2
+    shield: lily58_left nice_view_adapter nice_view
+  - board: nice_nano_v2
+    shield: lily58_right
