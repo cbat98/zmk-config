@@ -13,7 +13,18 @@
 #
 ---
 include:
+  # Lily58, running the 42-key training keymap.
   - board: nice_nano_v2
     shield: lily58_left nice_view_adapter nice_view
   - board: nice_nano_v2
     shield: lily58_right
+
+  # chrl-kbd v1. Pinout is in; not yet compiled or flashed.
+  #
+  # Displays are footprinted but unpopulated, and the nice!view is NOT routed
+  # to the pro-micro SPI pins, so "nice_view_adapter nice_view" will not work
+  # here as it does for the Lily58 above. See config/chrl_kbd_v1.conf.
+  - board: nice_nano_v2
+    shield: chrl_kbd_v1_left
+  - board: nice_nano_v2
+    shield: chrl_kbd_v1_right
