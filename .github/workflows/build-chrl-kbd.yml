@@ -1,0 +1,24 @@
+name: chrl-kbd v1
+
+# DO NOT merge these three workflows into one file with three jobs.
+#
+# That was tried and it fails. ZMK's reusable workflow uploads each half as an
+# intermediate artifact named "artifact-<shield>-<board>", then a merge job
+# collects "artifact-*" with delete-merged: true. Artifacts are scoped to a
+# workflow RUN, not to a job, so with several calls in one run the first merge
+# to finish swallows and deletes every other call's artifacts, and the rest fail
+# with "No artifacts found matching pattern 'artifact-*'". Which one fails is a
+# race.
+#
+# The two Lily58 builds additionally collide outright: the intermediate name is
+# derived from shield + board, which is identical for both of them.
+#
+# Separate files means separate runs, so each has its own artifact namespace.
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      archive_name: chrl-kbd-v1

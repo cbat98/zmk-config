@@ -24,7 +24,15 @@ Three config directories rather than one, because **ZMK derives the keymap
 filename from the shield name** — shield `lily58_left` always reads
 `<config>/lily58.keymap`. Two Lily58 layouts therefore cannot share a config
 directory, and `config_path` is an input to the reusable workflow rather than a
-per-matrix-entry key. Hence three calls in `.github/workflows/build.yml`.
+per-matrix-entry key.
+
+And **three separate workflow files**, one per variant, which looks redundant
+and is not. ZMK's reusable workflow uploads each half as an intermediate
+`artifact-<shield>-<board>`, then merges `artifact-*` with `delete-merged: true`.
+Artifacts are scoped to a workflow *run*, so several calls in one run fight over
+the same namespace: the first merge to finish deletes everyone else's artifacts.
+Separate files means separate runs. There is a longer note in
+`.github/workflows/build-chrl-kbd.yml`.
 
 Each directory needs its own `west.yml`, since the workflow runs
 `west init -l <config_path>`. They are identical apart from `self.path`; if you

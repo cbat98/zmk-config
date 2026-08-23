@@ -1,0 +1,14 @@
+name: Lily58 (42-key training)
+
+# Its own file rather than a job alongside the others -- see
+# .github/workflows/build-chrl-kbd.yml for why.
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    with:
+      config_path: config-lily58-42
+      build_matrix_path: build-lily58-42.yaml
+      archive_name: lily58-42key
