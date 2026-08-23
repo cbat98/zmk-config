@@ -2,6 +2,20 @@
  * Copyright (c) 2020 The ZMK Contributors
  *
  * SPDX-License-Identifier: MIT
+ *
+ * TRAINING KEYMAP.
+ *
+ * This is the 42-key layout from corne.keymap, mapped onto the Lily58 with
+ * every key that the new board does not have set to &none:
+ *   - the whole number row      (12 keys)
+ *   - the inner "[" and "]"     (2 keys)
+ *   - the outermost thumb keys  (2 keys)
+ * 58 - 16 = 42.
+ *
+ * The dead keys are deliberately &none rather than left working, so that
+ * reaching for them fails loudly and the habit dies before the new board
+ * arrives. Everything else sits in exactly the position it will occupy on
+ * the new board.
  */
 
 #include <behaviors.dtsi>
@@ -13,7 +27,8 @@
 #define DEF  0
 #define LO   1
 #define HI   2
-#define GAME 3
+#define ADJ  3
+#define GAME 4
 
 / {
     behaviors {
@@ -29,70 +44,107 @@
         };
     };
 
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        tri_layer {
+            if-layers = <LO HI>;
+            then-layer = <ADJ>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+        // "," + "/" toggles the game layer. Lily58 key positions.
+        combo_game {
+            timeout-ms = <50>;
+            key-positions = <46 48>;
+            bindings = <&tog GAME>;
+            layers = <DEF GAME>;
+        };
+    };
+
     keymap {
         compatible = "zmk,keymap";
 
         default_layer {
-// ------------------------------------------------------------------------------------------------------------
-// | ESC   |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
-// | TAB   |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
-// | CTRL  |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//                     | ALT  | GUI  |  LO  |  SPACE |  | ENTER |  HI  | BSPC  | GUI   |
+// ---------------------------------------------------------------------------------------
+// | --- | --- | --- | --- | --- | --- |               | --- | --- | --- | --- | --- | --- |
+// | ESC |  Q  |  W  |  E  |  R  |  T  |               |  Y  |  U  |  I  |  O  |  P  |  -  |
+// | TAB |  A  |  S  |  D  |  F  |  G  |               |  H  |  J  |  K  |  L  |  ;  |  '  |
+// |  (  |  Z  |  X  |  C  |  V  |  B  | --- | | --- | |  N  |  M  |  ,  |  .  |  /  |  )  |
+//                   | --- | CTL |  LO | SPC | | RET | |  HI | BSPC| --- |
+//
+// GUI is only a home row mod (hold S / hold L). The outer left thumb holds CTRL.
             bindings = <
-&kp ESC  &kp N1     &kp N2     &kp N3      &kp N4      &kp N5                    &kp N6 &kp N7      &kp N8      &kp N9     &kp N0        &kp GRAVE
-&kp TAB  &kp Q      &kp W      &kp E       &kp R       &kp T                     &kp Y  &kp U       &kp I       &kp O      &kp P         &kp MINUS
-&kp CAPS &ht LALT A &ht LGUI S &ht LCTRL D &ht LSHFT F &kp G                     &kp H  &ht RSHFT J &ht RCTRL K &ht RGUI L &ht LALT SEMI &kp SQT
-&kp LPAR &kp Z      &kp X      &kp C       &kp V       &kp B  &kp LBKT  &kp RBKT &kp N  &kp M       &kp COMMA   &kp DOT    &kp FSLH      &kp RPAR
-                               &kp LALT    &kp LGUI    &mo LO &kp SPACE &kp RET  &mo HI &kp BSPC    &to GAME
+&none    &none      &none      &none       &none       &none                 &none   &none       &none       &none      &none         &none
+&kp ESC  &kp Q      &kp W      &kp E       &kp R       &kp T                 &kp Y   &kp U       &kp I       &kp O      &kp P         &kp MINUS
+&kp TAB  &ht LALT A &ht LGUI S &ht LCTRL D &ht LSHFT F &kp G                 &kp H   &ht RSHFT J &ht RCTRL K &ht RGUI L &ht LALT SEMI &kp SQT
+&kp LPAR &kp Z      &kp X      &kp C       &kp V       &kp B  &none  &none   &kp N   &kp M       &kp COMMA   &kp DOT    &kp FSLH      &kp RPAR
+                               &none       &kp LCTRL   &mo LO &kp SPACE      &kp RET &mo HI      &kp BSPC    &none
             >;
         };
 
         lower_layer {
-// ----------------------------------------------------------------------------------------------------------------
-// | BTCLR | BT1 | BT2 |  BT3 |  BT4 |  BT5 |                   | OUT_TOG |  PREV |  PLAY |  NEXT |  VOL- |  VOL+ |
-// |  F1   |  F2 |  F3 |  F4  |  F5  |  F6  |                   |   F7    |  F8   |  F9   |  F10  |  F11  |  F12  |
-// |   `   |  !  |  "  |  £   |  $   |  %   |                   |   ^     |  &    |  *    |  (    |   )   |   #   |
-// |       |     |     |      |      |      |        |  |       |         |  -    |  +    |  {    |   }   |  "\"  |
-//                     |      |      |      |        |  |       |         |  DEL  |       |
+// ---------------------------------------------------------------------------------------
+// | --- | --- | --- | --- | --- | --- |               | --- | --- | --- | --- | --- | --- |
+// | F1  | F2  | F3  | F4  | F5  | F6  |               | F7  | F8  | F9  | F10 | F11 | F12 |
+// |  `  |  !  |  "  |  £  |  $  |  %  |               |  ^  |  &  |  *  |  (  |  )  |  #  |
+// |     | UND | CUT | CPY | PST | RDO | --- | | --- | |  +  |  -  |  =  |  {  |  }  |  \  |
+//                   | --- |     |     |     | |     | |     | DEL | --- |
             bindings = <
-&bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4               &out OUT_TOG &kp C_PREV &kp C_PP        &kp C_NEXT &kp C_VOL_DN &kp C_VOL_UP
-&kp F1     &kp F2       &kp F3       &kp F4       &kp F5       &kp F6                     &kp F7       &kp F8     &kp F9          &kp F10    &kp F11      &kp F12
-&kp GRAVE  &kp EXCL     &kp AT       &kp HASH     &kp DOLLAR   &kp PRCNT                  &kp CARET    &kp AMPS   &kp KP_MULTIPLY &kp LPAR   &kp RPAR     &kp NUHS
-&trans     &trans       &trans       &trans       &trans       &trans       &trans &trans &trans       &kp MINUS  &kp EQUAL       &kp LBRC   &kp RBRC     &kp NUBS
-                                     &trans       &trans       &trans       &trans &trans &trans       &kp DEL    &trans
+&none     &none     &none     &none     &none      &none                          &none       &none     &none           &none    &none    &none
+&kp F1    &kp F2    &kp F3    &kp F4    &kp F5     &kp F6                          &kp F7      &kp F8    &kp F9          &kp F10  &kp F11  &kp F12
+&kp GRAVE &kp EXCL  &kp AT    &kp HASH  &kp DOLLAR &kp PRCNT                       &kp CARET   &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &kp NUHS
+&trans    &kp LC(Z) &kp LC(X) &kp LC(C) &kp LC(V)  &kp LC(LS(Z)) &none  &none      &kp KP_PLUS &kp MINUS &kp EQUAL       &kp LBRC &kp RBRC &kp NUBS
+                              &none     &trans     &trans        &trans            &trans      &trans    &kp DEL         &none
             >;
         };
 
         raise_layer {
-// -------------------------------------------------------------------------------------------------------------
-// |       |     |     |      |      |      |                   |      |       |       |      |       |  HOME  |
-// |   `   |  1  |  2  |  3   |  4   |  5   |                   |  6   |   7   |   8   |  9   |   0   |  PGUP  |
-// |   F1  |  F2 |  F3 |  F4  |  F5  |  F6  |                   |  <   |   v   |   ^   |  >   |       |  PGDN  |
-// |   F7  |  F8 |  F9 |  F10 |  F11 |  F12 |        |  |       |  +   |   -   |   =   |  [   |   ]   |  END   |
-//                     |      |      |      |        |  |       |      |       |       |
+// ---------------------------------------------------------------------------------------
+// | --- | --- | --- | --- | --- | --- |               | --- | --- | --- | --- | --- | --- |
+// |  `  |  1  |  2  |  3  |  4  |  5  |               |  6  |  7  |  8  |  9  |  0  |  =  |
+// |     | ALT | GUI | CTL | SFT |     |               |  <  |  v  |  ^  |  >  |     |     |
+// |     |     |     |     |     |     | --- | | --- | | HOME| PGDN| PGUP| END |  [  |  ]  |
+//                   | --- |     |     |     | |     | |     | DEL | --- |
             bindings = <
-&trans    &trans &trans &trans  &trans  &trans                &trans      &trans    &trans    &trans    &trans   &kp HOME
-&kp GRAVE &kp N1 &kp N2 &kp N3  &kp N4  &kp N5                &kp N6      &kp N7    &kp N8    &kp N9    &kp N0   &kp PG_UP
-&kp F1    &kp F2 &kp F3 &kp F4  &kp F5  &kp F6                &kp LEFT    &kp DOWN  &kp UP    &kp RIGHT &trans   &kp PG_DN
-&kp F7    &kp F8 &kp F9 &kp F10 &kp F11 &kp F12 &trans &trans &kp KP_PLUS &kp MINUS &kp EQUAL &kp LBKT  &kp RBKT &kp END
-                        &trans  &trans  &trans  &trans &trans &trans      &trans    &trans
+&none     &none    &none    &none     &none     &none                       &none    &none     &none     &none     &none    &none
+&kp GRAVE &kp N1   &kp N2   &kp N3    &kp N4    &kp N5                      &kp N6   &kp N7    &kp N8    &kp N9    &kp N0   &kp EQUAL
+&trans    &kp LALT &kp LGUI &kp LCTRL &kp LSHFT &trans                      &kp LEFT &kp DOWN  &kp UP    &kp RIGHT &trans   &trans
+&trans    &trans   &trans   &trans    &trans    &trans   &none  &none       &kp HOME &kp PG_DN &kp PG_UP &kp END   &kp LBKT &kp RBKT
+                            &none     &trans    &trans   &trans             &trans   &trans    &kp DEL   &none
+            >;
+        };
+
+        adjust_layer {
+// ---------------------------------------------------------------------------------------
+// | --- | --- | --- | --- | --- | --- |               | --- | --- | --- | --- | --- | --- |
+// |BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |               | OUT | PREV| PLAY| NEXT| VOL-| VOL+|
+// |BOOT |     |     |     |     |     |               |     |     |     |     |     | MUTE|
+// |RESET|     |     |     |     | GAME| --- | | --- | |     |     |     |     |     | BOOT|
+//                   | --- |     |     |     | |     | |     |     | --- |
+            bindings = <
+&none       &none        &none        &none        &none        &none                          &none        &none      &none    &none      &none        &none
+&bt BT_CLR  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4                    &out OUT_TOG &kp C_PREV &kp C_PP &kp C_NEXT &kp C_VOL_DN &kp C_VOL_UP
+&bootloader &none        &none        &none        &none        &none                           &none        &none      &none    &none      &none        &kp C_MUTE
+&sys_reset  &none        &none        &none        &none        &tog GAME    &none  &none       &none        &none      &none    &none      &none        &bootloader
+                                      &none        &trans       &trans       &trans             &trans       &trans     &trans   &none
             >;
         };
 
         game_layer {
-// ------------------------------------------------------------------------------------------------------------
-// | ESC   |  1  |  2  |  3   |  4   |  5   |                   |  6   |  7    |  8    |  9   |   0   |   `   |
-// | TAB   |  Q  |  W  |  E   |  R   |  T   |                   |  Y   |  U    |  I    |  O   |   P   |   -   |
-// | CTRL  |  A  |  S  |  D   |  F   |  G   |                   |  H   |  J    |  K    |  L   |   ;   |   '   |
-// | SHIFT |  Z  |  X  |  C   |  V   |  B   |   "["  |  |  "]"  |  N   |  M    |  ,    |  .   |   /   | SHIFT |
-//                     | ALT  | GUI  |  LO  |  SPACE |  | ENTER |  HI  | BSPC  | GUI   |
+// ---------------------------------------------------------------------------------------
+// | --- | --- | --- | --- | --- | --- |               | --- | --- | --- | --- | --- | --- |
+// | ESC |  Q  |  W  |  E  |  R  |  T  |               |  Y  |  U  |  I  |  O  |  P  |  -  |
+// | TAB |  A  |  S  |  D  |  F  |  G  |               |  H  |  J  |  K  |  L  |  ;  |  '  |
+// |SHIFT|  Z  |  X  |  C  |  V  |  B  | --- | | --- | |  N  |  M  |  ,  |  .  |  /  |  )  |
+//                   | --- | CTL | ALT | SPC | | RET | |  HI | BSPC| --- |
             bindings = <
-&kp ESC   &kp N1 &kp N2 &kp N3   &kp N4   &kp N5                    &kp N6 &kp N7   &kp N8    &kp N9  &kp N0   &kp GRAVE
-&kp TAB   &kp Q  &kp W  &kp E    &kp R    &kp T                     &kp Y  &kp U    &kp I     &kp O   &kp P    &kp MINUS
-&kp LCTRL &kp A  &kp S  &kp D    &kp F    &kp G                     &kp H  &kp J    &kp K     &kp L   &kp SEMI &kp SQT
-&kp LSHFT &kp Z  &kp X  &kp C    &kp V    &kp B  &kp LBKT  &kp RBKT &kp N  &kp M    &kp COMMA &kp DOT &kp FSLH &kp RPAR
-                        &kp LALT &kp LGUI &mo LO &kp SPACE &kp RET  &mo HI &kp BSPC &to DEF
+&none     &none &none &none     &none    &none                    &none   &none  &none     &none   &none    &none
+&kp ESC   &kp Q &kp W &kp E     &kp R    &kp T                    &kp Y   &kp U  &kp I     &kp O   &kp P    &kp MINUS
+&kp TAB   &kp A &kp S &kp D     &kp F    &kp G                    &kp H   &kp J  &kp K     &kp L   &kp SEMI &kp SQT
+&kp LSHFT &kp Z &kp X &kp C     &kp V    &kp B     &none  &none   &kp N   &kp M  &kp COMMA &kp DOT &kp FSLH &kp RPAR
+                      &none     &kp LCTRL &kp LALT &kp SPACE      &kp RET &mo HI &kp BSPC  &none
             >;
         };
     };
