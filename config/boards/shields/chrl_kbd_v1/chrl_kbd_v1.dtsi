@@ -1,0 +1,80 @@
+/*
+ * chrl-kbd v1 -- shared hardware definition for both halves.
+ *
+ * The PCB is reversible: one design, flipped, with solder jumpers on the
+ * controller footprint selecting the nets. Both halves therefore share a
+ * single pin definition, and ALL of the GPIO config lives here rather than
+ * being split across the two overlays. The only per-half difference is the
+ * matrix transform's col-offset, in chrl_kbd_v1_right.overlay.
+ *
+ * Pin assignment taken from the fabricated PCB. GPIO flags per
+ * https://zmk.dev/docs/config/kscan -- for col2row, columns are driven
+ * outputs and rows are pulled-down inputs.
+ */
+
+#include <dt-bindings/zmk/matrix_transform.h>
+
+/ {
+    chosen {
+        zmk,kscan = &kscan0;
+        zmk,matrix_transform = &default_transform;
+    };
+
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        wakeup-source;
+        diode-direction = "col2row";
+
+        /* P4..P9, outer/pinky side -> inner. Same on both halves. */
+        col-gpios
+            = <&pro_micro 4 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 5 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 6 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 7 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 8 GPIO_ACTIVE_HIGH>
+            , <&pro_micro 9 GPIO_ACTIVE_HIGH>
+            ;
+
+        /*
+         * DESCENDING pin order, and that is not a mistake. Matrix row 0 must
+         * be the top row, and on this PCB the top row is P21 while the thumb
+         * row is P18. Listing these as P18..P21 would compile cleanly and give
+         * a keyboard whose rows are upside down.
+         */
+        row-gpios
+            = <&pro_micro 21 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* top   */
+            , <&pro_micro 20 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* home  */
+            , <&pro_micro 19 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* bot   */
+            , <&pro_micro 18 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>   /* thumb */
+            ;
+    };
+
+    /*
+     * 3x6 + 3 per half, as 4 rows x 12 columns. The right half sets
+     * col-offset = <6>, so its own columns 0..5 land in 6..11.
+     *
+     * The right half of every line runs BACKWARDS -- 11, 10, 9, 8, 7, 6 --
+     * and this is the crux of the reversible design. On both halves, matrix
+     * column 0 is the OUTER column, because flipping the board puts P4 on the
+     * far side of each hand. But the keymap is read left to right across the
+     * whole keyboard, so on the right hand that is inner to outer: Y U I O P -.
+     * Y is therefore the right half's column 5, and "-" is its column 0.
+     *
+     * Writing this side ascending would compile, scan every key correctly, and
+     * produce a keyboard whose right half is mirrored: "-" where Y should be.
+     *
+     * Same reasoning on the thumb row. Left to right the right thumbs are
+     * ENTER, HI, BSPC -- near, mid, far -- which is columns 11, 10, 9.
+     */
+    default_transform: keymap_transform_0 {
+        compatible = "zmk,matrix-transform";
+        columns = <12>;
+        rows = <4>;
+        map = <
+RC(0,0) RC(0,1) RC(0,2) RC(0,3) RC(0,4) RC(0,5)     RC(0,11) RC(0,10) RC(0,9) RC(0,8) RC(0,7) RC(0,6)
+RC(1,0) RC(1,1) RC(1,2) RC(1,3) RC(1,4) RC(1,5)     RC(1,11) RC(1,10) RC(1,9) RC(1,8) RC(1,7) RC(1,6)
+RC(2,0) RC(2,1) RC(2,2) RC(2,3) RC(2,4) RC(2,5)     RC(2,11) RC(2,10) RC(2,9) RC(2,8) RC(2,7) RC(2,6)
+                        RC(3,3) RC(3,4) RC(3,5)     RC(3,11) RC(3,10) RC(3,9)
+        >;
+    };
+};

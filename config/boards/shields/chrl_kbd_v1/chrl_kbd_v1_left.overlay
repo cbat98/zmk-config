@@ -1,0 +1,6 @@
+#include "chrl_kbd_v1.dtsi"
+
+/*
+ * Nothing to add. The reversible PCB means both halves share one pin map, and
+ * the left half uses the matrix transform unmodified (its columns are 0-5).
+ */

@@ -1,0 +1,138 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * chrl-kbd v1 -- 42-key split (3x6 + 3 thumbs per half).
+ * Derived from the Lily58 layout in this repo, minus the number row,
+ * the inner "[" / "]" keys, and the outermost thumb on each half.
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/ext_power.h>
+#include <dt-bindings/zmk/outputs.h>
+
+#define DEF  0
+#define LO   1
+#define HI   2
+#define ADJ  3
+#define GAME 4
+
+/ {
+    behaviors {
+        ht: hold_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "HOME_ROW_MODS";
+            #binding-cells = <2>;
+            bindings = <&kp>, <&kp>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <50>;
+        };
+    };
+
+    // Holding both thumb layer keys opens ADJ (bluetooth, media, reset).
+    conditional_layers {
+        compatible = "zmk,conditional-layers";
+        tri_layer {
+            if-layers = <LO HI>;
+            then-layer = <ADJ>;
+        };
+    };
+
+    combos {
+        compatible = "zmk,combos";
+        // "," + "/" together toggles the game layer, in both directions.
+        // Non-adjacent, so it is hard to roll into by accident, and neither
+        // key gets used in games.
+        combo_game {
+            timeout-ms = <50>;
+            key-positions = <32 34>;
+            bindings = <&tog GAME>;
+            layers = <DEF GAME>;
+        };
+    };
+
+    keymap {
+        compatible = "zmk,keymap";
+
+        default_layer {
+// ---------------------------------------------------------------------------------
+// | ESC  |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U  |  I  |  O  |  P  |  -  |
+// | TAB  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J  |  K  |  L  |  ;  |  '  |
+// |  (   |  Z  |  X  |  C  |  V  |  B  |     |  N  |  M  |  ,  |  .  |  /  |  )  |
+//                    | CTL |  LO | SPC |     | RET |  HI | BSPC |
+//
+// GUI is deliberately only a home row mod (hold S / hold L). The outer left thumb
+// holds CTRL instead: it makes ctrl+shift+<letter> a thumb plus one home row mod
+// rather than two home row mods held at once, and it puts CTRL on the same physical
+// key it occupies on the game layer.
+            bindings = <
+&kp ESC  &kp Q      &kp W      &kp E       &kp R       &kp T          &kp Y   &kp U       &kp I       &kp O      &kp P         &kp MINUS
+&kp TAB  &ht LALT A &ht LGUI S &ht LCTRL D &ht LSHFT F &kp G          &kp H   &ht RSHFT J &ht RCTRL K &ht RGUI L &ht LALT SEMI &kp SQT
+&kp LPAR &kp Z      &kp X      &kp C       &kp V       &kp B          &kp N   &kp M       &kp COMMA   &kp DOT    &kp FSLH      &kp RPAR
+                                &kp LCTRL  &mo LO      &kp SPACE      &kp RET &mo HI      &kp BSPC
+            >;
+        };
+
+        lower_layer {
+// ---------------------------------------------------------------------------------
+// |  F1  | F2  | F3  | F4  | F5  | F6  |     | F7  | F8  | F9  | F10 | F11 | F12 |
+// |  `   |  !  |  "  |  £  |  $  |  %  |     |  ^  |  &  |  *  |  (  |  )  |  #  |
+// |      | UND | CUT | CPY | PST | RDO |     |  +  |  -  |  =  |  {  |  }  |  \  |
+//                    |     |     |     |     |     |     | DEL |
+            bindings = <
+&kp F1    &kp F2    &kp F3    &kp F4    &kp F5     &kp F6           &kp F7      &kp F8    &kp F9          &kp F10  &kp F11  &kp F12
+&kp GRAVE &kp EXCL  &kp AT    &kp HASH  &kp DOLLAR &kp PRCNT        &kp CARET   &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &kp NUHS
+&trans    &kp LC(Z) &kp LC(X) &kp LC(C) &kp LC(V)  &kp LC(LS(Z))    &kp KP_PLUS &kp MINUS &kp EQUAL       &kp LBRC &kp RBRC &kp NUBS
+                              &trans    &trans     &trans           &trans      &trans    &kp DEL
+            >;
+        };
+
+        raise_layer {
+// ---------------------------------------------------------------------------------
+// |  `   |  1  |  2  |  3  |  4  |  5  |     |  6  |  7  |  8  |  9  |  0  |  =  |
+// |      | ALT | GUI | CTL | SFT |     |     |  <  |  v  |  ^  |  >  |     |     |
+// |      |     |     |     |     |     |     | HOME| PGDN| PGUP| END |  [  |  ]  |
+//                    |     |     |     |     |     |     | DEL |
+            bindings = <
+&kp GRAVE &kp N1   &kp N2   &kp N3    &kp N4    &kp N5     &kp N6   &kp N7    &kp N8    &kp N9    &kp N0   &kp EQUAL
+&trans    &kp LALT &kp LGUI &kp LCTRL &kp LSHFT &trans     &kp LEFT &kp DOWN  &kp UP    &kp RIGHT &trans   &trans
+&trans    &trans   &trans   &trans    &trans    &trans     &kp HOME &kp PG_DN &kp PG_UP &kp END   &kp LBKT &kp RBKT
+                            &trans    &trans    &trans     &trans   &trans    &kp DEL
+            >;
+        };
+
+        adjust_layer {
+// ---------------------------------------------------------------------------------
+// | BTCLR| BT1 | BT2 | BT3 | BT4 | BT5 |     | OUT | PREV| PLAY| NEXT| VOL-| VOL+|
+// | BOOT |     |     |     |     |     |     |     |     |     |     |     | MUTE|
+// | RESET|     |     |     |     |GAME |     |     |     |     |     |     | BOOT|
+//                    |     |     |     |     |     |     |     |
+            bindings = <
+&bt BT_CLR  &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4    &out OUT_TOG &kp C_PREV &kp C_PP &kp C_NEXT &kp C_VOL_DN &kp C_VOL_UP
+&bootloader &none        &none        &none        &none        &none           &none        &none      &none    &none      &none        &kp C_MUTE
+&sys_reset  &none        &none        &none        &none        &tog GAME       &none        &none      &none    &none      &none        &bootloader
+                                      &trans       &trans       &trans          &trans       &trans     &trans
+            >;
+        };
+
+        game_layer {
+// ---------------------------------------------------------------------------------
+// | ESC  |  Q  |  W  |  E  |  R  |  T  |     |  Y  |  U  |  I  |  O  |  P  |  -  |
+// | TAB  |  A  |  S  |  D  |  F  |  G  |     |  H  |  J  |  K  |  L  |  ;  |  '  |
+// | SHIFT|  Z  |  X  |  C  |  V  |  B  |     |  N  |  M  |  ,  |  .  |  /  |  )  |
+//                    | CTL | ALT | SPC |     | RET |  HI | BSPC |
+// No home row mods. "," + "/" toggles back to the default layer.
+            bindings = <
+&kp ESC   &kp Q &kp W &kp E     &kp R    &kp T        &kp Y   &kp U  &kp I     &kp O   &kp P    &kp MINUS
+&kp TAB   &kp A &kp S &kp D     &kp F    &kp G        &kp H   &kp J  &kp K     &kp L   &kp SEMI &kp SQT
+&kp LSHFT &kp Z &kp X &kp C     &kp V    &kp B        &kp N   &kp M  &kp COMMA &kp DOT &kp FSLH &kp RPAR
+                      &kp LCTRL &kp LALT &kp SPACE    &kp RET &mo HI &kp BSPC
+            >;
+        };
+    };
+};

@@ -1,0 +1,10 @@
+#include "chrl_kbd_v1.dtsi"
+
+/*
+ * The only per-half difference. Shifts this half's columns 0-5 into 6-11 of
+ * the matrix transform; the reversal of the physical order is already handled
+ * by the map in the .dtsi.
+ */
+&default_transform {
+    col-offset = <6>;
+};

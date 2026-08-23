@@ -1,0 +1,12 @@
+file_format: "1"
+id: chrl_kbd_v1
+name: chrl-kbd v1
+type: shield
+url: https://github.com/cbat98/zmk-config
+requires:
+  - pro_micro
+features:
+  - keys
+siblings:
+  - chrl_kbd_v1_left
+  - chrl_kbd_v1_right
