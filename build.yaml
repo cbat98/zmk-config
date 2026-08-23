@@ -12,7 +12,7 @@
 include:
   # Displays are footprinted but routed to pro-micro 0/1/2, which is not where
   # nice_view_adapter looks. Do not add it here; see config/chrl_kbd_v1.conf.
-  - board: nice_nano_v2
+  - board: nice_nano//zmk
     shield: chrl_kbd_v1_left
-  - board: nice_nano_v2
+  - board: nice_nano//zmk
     shield: chrl_kbd_v1_right

@@ -2,7 +2,7 @@
 # with its 16 surplus keys set to &none, for adapting to chrl-kbd v1.
 ---
 include:
-  - board: nice_nano_v2
+  - board: nice_nano//zmk
     shield: lily58_left nice_view_adapter nice_view
-  - board: nice_nano_v2
+  - board: nice_nano//zmk
     shield: lily58_right
