@@ -5,7 +5,16 @@ manifest:
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: main
+      # PINNED. Was `main`, which is a moving target: on 2025-12-09 ZMK's main
+      # jumped to Zephyr 4.1 (HWMv2, board variants, bootloader retention,
+      # LVGL 9.3) and this build broke without a single change on our side.
+      #
+      # ZMK's own recommendation is to pin unless you want to chase periodic
+      # breaks: https://zmk.dev/blog/2025/06/20/pinned-zmk
+      #
+      # Upgrading is then a deliberate act with a diff to read, rather than
+      # something that happens to you between one push and the next.
+      revision: v0.3
       import: app/west.yml
   self:
     path: config
