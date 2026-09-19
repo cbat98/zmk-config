@@ -28,5 +28,9 @@ include:
   # nice_view_adapter looks. Do not add it here; see config/chrl_kbd_v1.conf.
   - board: nice_nano_v2
     shield: chrl_kbd_v1_left
+    # TEMPORARY, for first bringup. Remove once the matrix is confirmed:
+    # logging costs battery life and should not ship enabled.
+    snippet: zmk-usb-logging
   - board: nice_nano_v2
     shield: chrl_kbd_v1_right
+    snippet: zmk-usb-logging
