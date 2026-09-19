@@ -19,6 +19,13 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@main
+    # PINNED to v0.3, and it MUST match config/west.yml's revision.
+    #
+    # These are two halves of one version choice. Pinning only west.yml leaves
+    # the workflow on main, which then runs tooling newer than the Zephyr it
+    # checked out -- that is how this build died with
+    # "KeyError: 'qualifiers'" from west boards, a field newer Zephyr has and
+    # older Zephyr does not.
+    uses: zmkfirmware/zmk/.github/workflows/build-user-config.yml@v0.3
     with:
       archive_name: chrl-kbd-v1
