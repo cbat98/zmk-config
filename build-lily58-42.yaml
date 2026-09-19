@@ -2,7 +2,21 @@
 # with its 16 surplus keys set to &none, for adapting to chrl-kbd v1.
 ---
 include:
-  - board: nice_nano//zmk
+  # nice_nano_v2, NOT nice_nano//zmk.
+  #
+  # The `//zmk` board-variant syntax arrived with Zephyr 4.1 on ZMK main. We
+  # are pinned to v0.3, which predates it: there the board is plain
+  # `nice_nano_v2`.
+  #
+  # Using the new name against the old workflow compiles fine and then dies
+  # renaming artifacts, because the v0.3 rename step drops the board id
+  # straight into a filename and the slash in `nice_nano//zmk` reads as a
+  # directory separator: "cannot create regular file ... No such file or
+  # directory".
+  #
+  # If this repo is ever unpinned, both this and config/west.yml and the three
+  # workflows change together.
+  - board: nice_nano_v2
     shield: lily58_left nice_view_adapter nice_view
-  - board: nice_nano//zmk
+  - board: nice_nano_v2
     shield: lily58_right

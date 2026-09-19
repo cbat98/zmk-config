@@ -10,9 +10,23 @@
 #   build-lily58-42.yaml  + config-lily58-42/  -> Lily58, 42-key training layout
 ---
 include:
+  # nice_nano_v2, NOT nice_nano//zmk.
+  #
+  # The `//zmk` board-variant syntax arrived with Zephyr 4.1 on ZMK main. We
+  # are pinned to v0.3, which predates it: there the board is plain
+  # `nice_nano_v2`.
+  #
+  # Using the new name against the old workflow compiles fine and then dies
+  # renaming artifacts, because the v0.3 rename step drops the board id
+  # straight into a filename and the slash in `nice_nano//zmk` reads as a
+  # directory separator: "cannot create regular file ... No such file or
+  # directory".
+  #
+  # If this repo is ever unpinned, both this and config/west.yml and the three
+  # workflows change together.
   # Displays are footprinted but routed to pro-micro 0/1/2, which is not where
   # nice_view_adapter looks. Do not add it here; see config/chrl_kbd_v1.conf.
-  - board: nice_nano//zmk
+  - board: nice_nano_v2
     shield: chrl_kbd_v1_left
-  - board: nice_nano//zmk
+  - board: nice_nano_v2
     shield: chrl_kbd_v1_right
